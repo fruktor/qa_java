@@ -24,4 +24,11 @@ public class FelineTests {
      assertEquals(1, feline.getKittens());
  }
 
+    @Test
+    public void getKittensTestWithArg() {
+     Feline feline  = new Feline();
+     assertEquals(1, feline.getKittens(1));
+    }
+
+
 }

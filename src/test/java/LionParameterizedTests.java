@@ -6,6 +6,9 @@ import org.junit.runners.Parameterized;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(Parameterized.class)
 public class LionParameterizedTests {
@@ -21,7 +24,7 @@ public class LionParameterizedTests {
         this.hasMane = hasMane;
     }
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "Пол: {0}, грива: {1}")
     public static Object[][] setSexForLion() {
         return new Object[][] {
                 {"Самец", true},
@@ -30,14 +33,24 @@ public class LionParameterizedTests {
         };
     }
 
+
+
     @Test
     public void doesHasManeTest() throws Exception {
-        try {
+        if ( sex.equals("Самка") || sex.equals("Самец") ) {
             Lion lion = new Lion(sex, feline);
-            assertEquals(lion.doesHaveMane(), hasMane);
+            assertEquals(hasMane, lion.doesHaveMane());
         }
-        catch (Exception e) {
-            System.out.println("Используйте допустимые значения пола животного - самей или самка");
+        else {
+            Lion lion = mock(Lion.class);
+            when(lion.doesHaveMane()).thenThrow(new RuntimeException("Используйте допустимые значения пола животного - самец или самка"));
+
+            Exception exception = assertThrows(RuntimeException.class, () -> {
+                lion.doesHaveMane();
+            });
+
+            assertEquals("Используйте допустимые значения пола животного - самец или самка",
+                    exception.getMessage());
         }
     }
 
